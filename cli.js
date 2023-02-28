@@ -2,7 +2,7 @@
 
 import process from "node:process";
 import { program  } from "commander";
-import { makeRel, loadJSON, getToken, setToken } from "./index.js";
+import { makeRel, loadJSON, getToken, setToken, generateAgenda } from "./index.js";
 
 const rel = makeRel(import.meta.url);
 const { version } = await loadJSON(rel('./package.json'));
@@ -28,9 +28,10 @@ program
   .description('Generate the agenda for the next Board meeting')
   .action(async () => {
     try {
-      const token = await getToken();
-      if (!token) throw new Error(`No token found, you need to run 'diotima token <token>' first.`);
-
+      const githubToken = await getToken();
+      if (!githubToken) throw new Error(`No token found, you need to run 'diotima token <token>' first.`);
+      const agenda = await generateAgenda({ githubToken });
+      console.log(agenda);
       console.warn(`Agenda generated successfully.`);
     }
     catch (err) {
