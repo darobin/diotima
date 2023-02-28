@@ -6,7 +6,9 @@
   "author": "Robin Berjon <robin@berjon.com>",
   "license": "MIT",
   "scripts": {},
-  "bin": {},
+  "bin": {
+    "diotima": "./cli.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/darobin/diotima.git"
@@ -27,5 +29,9 @@
   },
   "devDependencies": {
     "eslint": "^8.26.0"
+  },
+  "dependencies": {
+    "commander": "^10.0.0",
+    "keytar": "^7.9.0"
   }
 }
