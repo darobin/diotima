@@ -8,5 +8,5 @@
 - [ ] Upload to repo
 - [ ] Propose a policy
   - Only GH issues can be on the agenda
-  - To be discussed at the next meeting, they need to have `bod-agenda` labels
+  - To be discussed at the next meeting, they need to have `board agenda` labels
   - They need to be either `for discussion` or `needs resolution`
