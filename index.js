@@ -10,8 +10,8 @@ const SERVICE = 'com.berjon.diotima';
 const GH_ACCOUNT = 'w3c-bod-gitub';
 const CAL_ACCOUNT = 'w3c-bod-calendar';
 const ONE_AND_A_HALF_DAYS = 36 * 60 * 60 * 1000; // in case DST or start time shifts
-const DATE_FMT = { weekday: 'long', year: 'numeric', month: 'short', day: '2-digit' };
-const TIME_FMT = { hour: "2-digit", minute: "2-digit" };
+const DATE_FMT = { weekday: 'long', year: 'numeric', month: 'long', day: '2-digit' };
+const TIME_FMT = { hour: "2-digit", minute: "2-digit", hour12: false };
 const REPOS = ['finance', 'personnel', 'governance', 'board'];
 const REPO_LABELS = {
   finance: 'Finance Committee',
@@ -62,7 +62,7 @@ export async function generateAgenda ({ githubToken, w3cCalendar }) {
     });
   }
   else {
-    date = toDate(ev.startDate, ev.endDate);
+    date = `${toDate(ev.startDate, ev.endDate)} UTC`;
   }
   console.log(`
 # Meeting Agenda — W3C, Inc. Board of Directors
@@ -85,7 +85,7 @@ Changes to the agenda, if necessary.
     }
     else {
       console.log(`## ${REPO_LABELS[repo]}\n\n`);
-      issues[repo].forEach(iss => formatIssue(iss, 3));
+      issues[repo].forEach(iss => console.log(formatIssue(iss, 3)));
     }
   });
 }
@@ -96,12 +96,15 @@ async function getGitHubIssues (auth) {
   const issues = {};
   for (const repo of REPOS) {
     if (!issues[repo]) issues[repo] = [];
-    issues[repo] = await gh.rest.issues.listForRepo({
+    const res = await gh.rest.issues.listForRepo({
       repo,
       owner: 'w3c-bod',
-      labels: 'board agenda',
+      // labels: 'board agenda',
     });
+    if (res.status !== 200) throw new Error('Failed to load issues');
+    issues[repo] = res.data;
   }
+  // console.log(JSON.stringify(issues, null, 2));
   return issues;
 }
 
@@ -152,19 +155,29 @@ function toms (ev) {
 }
 
 function toDate (startDate, endDate) {
-  const sd = new Date(startDate);
-  const ed = new Date(endDate);
+  const sd = parseVDate(startDate);
+  const ed = parseVDate(endDate);
   return `${sd.toLocaleDateString('en-US', DATE_FMT)} ${sd.toLocaleTimeString([], TIME_FMT)} -  ${ed.toLocaleTimeString([], TIME_FMT)}`;
 }
 
+// 20230306T220000Z
+function parseVDate (str) {
+  const [, year, month, day, hours, minutes] = str.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/);
+  return new Date(year, parseInt(month, 10) - 1, day, hours, minutes);
+}
+
 function formatIssue ({ title, number, body, html_url, labels, assignees }, depth = 2) {
-  const kind = 'UNKNOWN: for discussion or needs resolution';
+  let kind = 'UNKNOWN: for discussion or needs resolution';
   if (labels.find(({ name }) => name === 'for discussion')) kind = 'For discussion.';
   else if (labels.find(({ name }) => name === 'needs resolution')) kind = 'Needs resolution.';
-  const leaders = assignees.map(({ login, html_url, avatar_url }) => `![${login}](${avatar_url}) [@${login}](${html_url})`).join(', ');
+  const leaders = assignees.map(({ login, html_url, avatar_url }) => `![${login}](${smol(avatar_url)}) [@${login}](${html_url})`).join(', ');
   return `${'#'.repeat(depth)} ${title} ([#${number}](${html_url}))
 **${kind}**
 
-${body}${leaders ? `\n\nDiscussion led by: ${leaders}`: ''}
+${body || 'No description.'}${leaders ? `\n\nDiscussion led by: ${leaders}`: ''}
 `;
+}
+
+function smol (avatar_url) {
+  return `${avatar_url}${/\?/.test(avatar_url) ? '&' : '?'}size=32`;
 }

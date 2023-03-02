@@ -5,7 +5,7 @@ Agenda management for the W3C Board of Directors.
 
 > and turning rather towards the main ocean of the beautiful may by contemplation of this bring forth in all their
 > splendor many fair fruits of discourse and meditation in a plenteous crop of philosophy; until with the strength
-> and increase there acquired he descries a certain single knowledge connected with a beauty which has yet to be told.
+> and increase there acquired he descries a certain single knowledge connected with a beauty which has yet to be told.\
 > — *Diotima*, cited in *Symposium*, Plato
 
 ## Installation
