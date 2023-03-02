@@ -99,7 +99,7 @@ async function getGitHubIssues (auth) {
     const res = await gh.rest.issues.listForRepo({
       repo,
       owner: 'w3c-bod',
-      // labels: 'board agenda',
+      labels: 'board agenda',
     });
     if (res.status !== 200) throw new Error('Failed to load issues');
     issues[repo] = res.data;
