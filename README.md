@@ -35,3 +35,12 @@ You only need to do that once; afterwards you can generate an agenda any time wi
 ```
 diotima agenda > path/to/agenda.md
 ```
+
+## Conventions
+
+The conventions that it understands are these, please use them:
+
+- Issues in the board's repo or any committee repo that are labelled 'board agenda' get included in the agenda for the next meeting.
+- Ideally those issues should also be labelled 'for discussion' or 'needs resolution' so that we can know what to expect.
+- The title of the issue is used for the agenda entry, and the body is used for the description, please use those accordingly.
+- If the issue is assigned to someone, that person will be listed as expected to lead the conversation.
