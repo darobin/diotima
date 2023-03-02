@@ -78,11 +78,10 @@ Changes to the agenda, if necessary.
 ## Minutes Approval
 
 @@@ link to previous minutes
-
 `);
   REPOS.forEach(repo => {
     if (!issues[repo]?.length) {
-      console.log(`## No ${REPO_LABELS[repo]} Issues\n\nNothing discussed at this meeting.\n\n`);
+      console.log(`## No ${REPO_LABELS[repo]} Issues\n\nNothing discussed at this meeting.\n`);
     }
     else {
       console.log(`## ${REPO_LABELS[repo]}\n\n`);
@@ -167,6 +166,5 @@ function formatIssue ({ title, number, body, html_url, labels, assignees }, dept
 **${kind}**
 
 ${body}${leaders ? `\n\nDiscussion led by: ${leaders}`: ''}
-
 `;
 }
